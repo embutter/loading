@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading...</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #1ab8e8;
+    --orange-dim: #0e82a8;
+    --panel: rgba(8,10,14,0.92);
+    --panel-border: rgba(26,184,232,0.22);
+    --text: #c8cdd8;
+    --text-dim: #6a7080;
+    --bg-dark: #060a0f;
+  }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Background scanlines + noise */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Animated BG gradient */
+  .bg-anim {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(26,184,232,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 20%, rgba(20,80,160,0.1) 0%, transparent 60%),
+      linear-gradient(160deg, #060a0f 0%, #080d14 50%, #050810 100%);
+    z-index: 0;
+    animation: bgPulse 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgPulse {
+    from { opacity: 1; }
+    to   { opacity: 0.85; }
+  }
+
+  /* Content wrapper */
+  .content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 1px solid var(--panel-border);
+    background: rgba(6,8,10,0.85);
+    flex-shrink: 0;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-mark {
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--orange);
+    letter-spacing: 1px;
+    position: relative;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+
+  .server-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #dde1eb;
+  }
+
+  .server-name span {
+    color: var(--orange);
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stat-label {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .stat-value {
+    color: var(--orange);
+    font-size: 13px;
+  }
+
+  .divider-v {
+    width: 1px;
+    height: 20px;
+    background: var(--panel-border);
+  }
+
+  /* ── MAIN AREA ── */
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    min-height: 0;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    padding: 28px 28px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 0;
+  }
+
+  /* Hero text */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--orange-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 52px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #eef0f5;
+    text-shadow: 0 0 60px rgba(232,98,26,0.15);
+  }
+
+  .hero-title em {
+    color: var(--orange);
+    font-style: normal;
+  }
+
+  /* Map info strip */
+  .map-strip {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .map-tag {
+    background: rgba(232,98,26,0.1);
+    border: 1px solid rgba(232,98,26,0.3);
+    padding: 4px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--orange);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  .map-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* Rules panel */
+  .rules-panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-left: 3px solid var(--orange);
+    padding: 16px 20px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .panel-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--panel-border);
+  }
+
+  .rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rules-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #9aa0b0;
+  }
+
+  .rules-list li::before {
+    content: '▸';
+    color: var(--orange);
+    font-size: 11px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    border-left: 1px solid var(--panel-border);
+    background: rgba(6,8,11,0.7);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .right-section {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  /* Players list */
+  .players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .players-list::-webkit-scrollbar { width: 3px; }
+  .players-list::-webkit-scrollbar-track { background: transparent; }
+  .players-list::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 2px; }
+
+  .player-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    padding: 4px 0;
+    opacity: 0;
+    animation: fadeSlide 0.4s ease forwards;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .player-avatar {
+    width: 22px;
+    height: 22px;
+    background: rgba(232,98,26,0.15);
+    border: 1px solid rgba(232,98,26,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-family: 'Oswald', sans-serif;
+    color: var(--orange);
+    flex-shrink: 0;
+    clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
+  }
+
+  .player-name { color: #bcc2d0; flex: 1; }
+  .player-ping {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .player-ping.good { color: #4caf78; }
+  .player-ping.ok   { color: #d4a017; }
+
+  /* Tip box */
+  .tip-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 20px;
+  }
+
+  .tip-content {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #7a8090;
+    font-family: 'Share Tech Mono', monospace;
+    animation: tipFade 0.6s ease;
+  }
+
+  @keyframes tipFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .tip-counter {
+    margin-top: 10px;
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* ── BOTTOM BAR ── */
+  .bottombar {
+    border-top: 1px solid var(--panel-border);
+    background: rgba(6,8,10,0.9);
+    flex-shrink: 0;
+    padding: 0 28px;
+  }
+
+  /* Progress section */
+  .progress-section {
+    padding: 12px 0 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .progress-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--orange);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .blink-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--orange);
+    animation: blink 1.2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.2; }
+  }
+
+  .progress-pct {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--orange);
+    letter-spacing: 1px;
+  }
+
+  /* Bar track */
+  .bar-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0a6080, var(--orange), #60e0ff);
+    transition: width 0.4s ease;
+    position: relative;
+  }
+
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 30px;
+    background: linear-gradient(90deg, transparent, rgba(255,160,80,0.6));
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%   { opacity: 0.3; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.3; }
+  }
+
+  /* Segment markers */
+  .bar-segments {
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  .bar-seg {
+    flex: 1;
+    border-right: 1px solid rgba(0,0,0,0.4);
+  }
+
+  .bar-seg:last-child { border-right: none; }
+
+  /* Sub-status */
+  .sub-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-anim"></div>
+
+<div class="content">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark">GM</div>
+      <div class="server-name"><span>SAND</span>BOX &nbsp;·&nbsp; 한국 서버</div>
+    </div>
+    <div class="topbar-right">
+      <div class="stat-item">
+        <span class="stat-label">플레이어</span>
+        <span class="stat-value" id="player-count">0</span>
+        <span class="stat-label">/ 64</span>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-item">
+        <span class="stat-label">핑</span>
+        <span class="stat-value" id="ping-val">—</span>
+        <span class="stat-label">ms</span>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-item">
+        <span class="stat-label">맵</span>
+        <span class="stat-value" id="map-display">gm_construct</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT -->
+    <div class="left-panel">
+
+      <div class="hero">
+        <div class="hero-sub">// 서버에 접속 중</div>
+        <div class="hero-title">SAND<em>BOX</em></div>
+      </div>
+
+      <div class="map-strip">
+        <div class="map-tag">맵</div>
+        <div class="map-name" id="map-full">gm_construct</div>
+        <div class="map-tag" style="margin-left:8px;">모드</div>
+        <div class="map-name">Sandbox</div>
+      </div>
+
+      <div class="rules-panel">
+        <div class="panel-title">서버 규칙</div>
+        <ul class="rules-list">
+          <li>프롭 스팸 및 서버에 렉을 유발하는 행위를 금지합니다.</li>
+          <li>다른 플레이어의 빌드를 허락 없이 파괴하거나 방해하지 마세요.</li>
+          <li>거대한 프롭이나 맵 밖으로 나가는 빌드는 금지합니다.</li>
+          <li>어드민의 지시에 반드시 따라야 합니다.</li>
+          <li>채팅 및 음성에서 욕설, 차별적 발언을 금지합니다.</li>
+          <li>다른 플레이어를 의도적으로 공격하거나 방해하지 마세요.</li>
+          <li>서버 성능을 저하시키는 복잡한 컨스트레인트나 스크립트를 금지합니다.</li>
+          <li>분쟁 발생 시 @ 를 입력해 관리자를 호출하세요.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-panel">
+
+      <div class="right-section">
+        <div class="panel-title">접속 중인 플레이어</div>
+        <div class="players-list" id="player-list"></div>
+      </div>
+
+      <div class="tip-box">
+        <div class="panel-title">팁</div>
+        <div class="tip-content" id="tip-text"></div>
+        <div class="tip-counter" id="tip-counter">TIP 1 / 6</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottombar">
+    <div class="progress-section">
+      <div class="progress-header">
+        <div class="progress-status">
+          <div class="blink-dot"></div>
+          <span id="status-text">게임 에셋 로딩 중</span>
+        </div>
+        <div class="progress-pct"><span id="pct-text">0</span>%</div>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="bar-fill" style="width:0%;">
+          <div class="bar-segments">
+            <div class="bar-seg"></div><div class="bar-seg"></div>
+            <div class="bar-seg"></div><div class="bar-seg"></div>
+            <div class="bar-seg"></div><div class="bar-seg"></div>
+            <div class="bar-seg"></div><div class="bar-seg"></div>
+            <div class="bar-seg"></div><div class="bar-seg"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sub-status" id="sub-status">Initializing...</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ── Garry's Mod API 연동 ── */
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+  document.querySelector('.server-name').innerHTML = servername
+    ? servername.replace(/([^a-zA-Z가-힣 ]*)(.+)/, '$1<span>$2</span>')
+    : '<span>SAND</span>BOX &nbsp;·&nbsp; 한국 서버';
+  if (mapname) {
+    document.getElementById('map-display').textContent = mapname;
+    document.getElementById('map-full').textContent = mapname;
+  }
+}
+
+function SetFilesTotal(total) { /* 파일 총 수 */ }
+
+function SetFilesNeeded(needed) { /* 필요 파일 */ }
+
+function DownloadingFile(file) {
+  document.getElementById('sub-status').textContent = file || '';
+}
+
+function LoadingInfo(status, name, id, transmitted, total) {
+  const stages = {
+    1:'맵 초기화 중', 2:'리소스 다운로드 중',
+    3:'리소스 다운로드 중', 4:'게임 초기화 중',
+    5:'서버 데이터 수신 중', 6:'완료'
+  };
+  document.getElementById('status-text').textContent = stages[status] || name || '로딩 중';
+  const pct = total > 0 ? Math.min(100, Math.round((transmitted / total) * 100)) : 0;
+  updateProgress(pct);
+  document.getElementById('sub-status').textContent = name || '';
+}
+
+function updateProgress(pct) {
+  document.getElementById('bar-fill').style.width = pct + '%';
+  document.getElementById('pct-text').textContent = pct;
+}
+
+function SetStatusChanged(status) {
+  document.getElementById('status-text').textContent = status || '';
+}
+
+/* ── Player count ── */
+function UpdateServerInfo(hostname, mapname, ip, gamemode, version) {}
+
+/* ── 팁 로테이션 ── */
+const tips = [
+  "Q 키로 스폰 메뉴를 열어 프롭, 엔티티, NPC 등을 스폰할 수 있습니다.",
+  "C 키로 컨텍스트 메뉴를 열어 선택한 오브젝트의 속성을 수정하세요.",
+  "툴건(Tool Gun)으로 웰드, 로프, 스러스터 등 다양한 컨스트레인트를 사용해보세요.",
+  "E 키로 오브젝트를 집고, Shift+E 로 회전 없이 정밀하게 배치할 수 있습니다.",
+  "피직스건으로 오브젝트를 집어던지거나 Gravity Gun 처럼 사용할 수 있습니다.",
+  "Undo(Z 키)로 방금 스폰하거나 변경한 오브젝트를 되돌릴 수 있습니다.",
+];
+
+let tipIdx = 0;
+function showTip() {
+  const el = document.getElementById('tip-text');
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = 'tipFade 0.6s ease';
+  el.textContent = tips[tipIdx];
+  document.getElementById('tip-counter').textContent = `TIP ${tipIdx+1} / ${tips.length}`;
+  tipIdx = (tipIdx + 1) % tips.length;
+}
+showTip();
+setInterval(showTip, 7000);
+
+/* ── 실시간 플레이어 목록 ── */
+const API_URL = 'https://yoursite.com/api/update.php'; // 여기 바꾸기
+
+function pingQuality(ms) {
+  if (ms < 60)  return 'good';
+  if (ms < 120) return 'ok';
+  return '';
+}
+
+function renderPlayers(players) {
+  const list = document.getElementById('player-list');
+  list.innerHTML = '';
+  players.forEach((p, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+    row.style.animationDelay = (i * 60) + 'ms';
+    const init = (p.name || '??').slice(0, 2).toUpperCase();
+    const q = pingQuality(p.ping);
+    row.innerHTML = `<div class="player-avatar">${init}</div>
+      <div class="player-name">${p.name}</div>
+      <div class="player-ping ${q}">${p.ping}ms</div>`;
+    list.appendChild(row);
+  });
+  document.getElementById('player-count').textContent = players.length;
+}
+
+async function fetchPlayers() {
+  try {
+    const res  = await fetch(API_URL + '?t=' + Date.now());
+    const data = await res.json();
+    renderPlayers(data.players || []);
+  } catch (e) {
+    // API 없으면 조용히 무시
+  }
+}
+
+fetchPlayers();
+setInterval(fetchPlayers, 10000); // 10초마다 갱신
+
+/* ── 데모용 진행 바 (실제 서버에선 LoadingInfo 가 처리) ── */
+let demoPct = 0;
+const statusMessages = [
+  '클라이언트 초기화 중','맵 다운로드 중','리소스 다운로드 중',
+  '서버 파일 동기화 중','게임 모드 로딩 중','완료 — 접속 준비됨'
+];
+const subMessages = [
+  'Initializing client...','maps/rp_downtown_v4c.bsp',
+  'materials/gmod/loading.vtf','lua/autorun/darkrp_config.lua',
+  'loading gamemode: darkrp','Ready!'
+];
+let stageIdx = 0;
+const demoTimer = setInterval(() => {
+  demoPct = Math.min(100, demoPct + Math.random() * 4 + 1);
+  updateProgress(Math.round(demoPct));
+  const s = Math.floor((demoPct / 100) * (statusMessages.length - 1));
+  if (s !== stageIdx) {
+    stageIdx = s;
+    document.getElementById('status-text').textContent = statusMessages[s];
+    document.getElementById('sub-status').textContent = subMessages[s];
+  }
+  if (demoPct >= 100) {
+    clearInterval(demoTimer);
+    document.querySelector('.blink-dot').style.background = '#4caf78';
+  }
+}, 120);
+</script>
+</body>
+</html>
