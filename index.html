@@ -2,731 +2,456 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading...</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Loading</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-  :root {
-    --orange: #1ab8e8;
-    --orange-dim: #0e82a8;
-    --panel: rgba(8,10,14,0.92);
-    --panel-border: rgba(26,184,232,0.22);
-    --text: #c8cdd8;
-    --text-dim: #6a7080;
-    --bg-dark: #060a0f;
-  }
+:root{
+  --bg:    #1a1a1a;
+  --panel: #242424;
+  --panel2:#2c2c2c;
+  --line:  #333333;
+  --accent:#f97316;
+  --text:  #cccccc;
+  --dim:   #666666;
+  --white: #eeeeee;
 
-  body {
-    background: var(--bg-dark);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+  /* ★ 맵 이름 여기서 바꾸기 ★ */
+}
 
-  /* Background scanlines + noise */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.18) 2px,
-        rgba(0,0,0,0.18) 4px
-      );
-    pointer-events: none;
-    z-index: 1;
-  }
+html,body{
+  width:100%;height:100%;
+  overflow:hidden;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Roboto',sans-serif;
+}
 
-  /* Animated BG gradient */
-  .bg-anim {
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 80%, rgba(26,184,232,0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 60% at 80% 20%, rgba(20,80,160,0.1) 0%, transparent 60%),
-      linear-gradient(160deg, #060a0f 0%, #080d14 50%, #050810 100%);
-    z-index: 0;
-    animation: bgPulse 6s ease-in-out infinite alternate;
-  }
+.wrap{
+  width:100%;height:100%;
+  display:grid;
+  grid-template-rows:1fr auto;
+}
 
-  @keyframes bgPulse {
-    from { opacity: 1; }
-    to   { opacity: 0.85; }
-  }
+/* ── 메인 영역 ── */
+.main{
+  display:grid;
+  grid-template-columns:1fr 300px;
+  min-height:0;
+}
 
-  /* Content wrapper */
-  .content {
-    position: relative;
-    z-index: 2;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+/* ── 왼쪽 ── */
+.left{
+  padding:40px 44px;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+  border-right:1px solid var(--line);
+}
 
-  /* ── TOP BAR ── */
-  .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 28px;
-    height: 56px;
-    border-bottom: 1px solid var(--panel-border);
-    background: rgba(6,8,10,0.85);
-    flex-shrink: 0;
-  }
+/* 서버 이름 */
+.server-name{
+  font-size:28px;
+  font-weight:700;
+  color:var(--white);
+  letter-spacing:0.5px;
+  margin-bottom:6px;
+  line-height:1.2;
+}
 
-  .topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
+.server-gamemode{
+  font-size:13px;
+  color:var(--accent);
+  font-weight:500;
+  letter-spacing:0.5px;
+  margin-bottom:32px;
+  text-transform:uppercase;
+}
 
-  .logo-mark {
-    width: 34px;
-    height: 34px;
-    border: 2px solid var(--orange);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Oswald', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--orange);
-    letter-spacing: 1px;
-    position: relative;
-    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
-  }
+/* 구분선 */
+.sep{
+  width:100%;
+  height:1px;
+  background:var(--line);
+  margin-bottom:28px;
+}
 
-  .server-name {
-    font-family: 'Oswald', sans-serif;
-    font-size: 18px;
-    font-weight: 400;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #dde1eb;
-  }
+/* 맵 정보 */
+.info-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
 
-  .server-name span {
-    color: var(--orange);
-  }
+.info-label{
+  font-size:11px;
+  color:var(--dim);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  width:80px;
+  flex-shrink:0;
+}
 
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
+.info-value{
+  font-family:'Roboto Mono',monospace;
+  font-size:13px;
+  color:var(--text);
+}
 
-  .stat-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+.info-value.accent{color:var(--accent);}
 
-  .stat-label {
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+/* 규칙 */
+.rules-title{
+  font-size:11px;
+  color:var(--dim);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-top:28px;
+  margin-bottom:14px;
+}
 
-  .stat-value {
-    color: var(--orange);
-    font-size: 13px;
-  }
+.rules-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
 
-  .divider-v {
-    width: 1px;
-    height: 20px;
-    background: var(--panel-border);
-  }
+.rule-item{
+  display:flex;
+  gap:10px;
+  font-size:13px;
+  color:#888;
+  line-height:1.5;
+}
 
-  /* ── MAIN AREA ── */
-  .main {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 0;
-    min-height: 0;
-  }
+.rule-item::before{
+  content:'•';
+  color:var(--accent);
+  flex-shrink:0;
+}
 
-  /* ── LEFT PANEL ── */
-  .left-panel {
-    padding: 28px 28px 0;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    min-height: 0;
-  }
+/* ── 오른쪽 ── */
+.right{
+  background:var(--panel);
+  display:flex;
+  flex-direction:column;
+}
 
-  /* Hero text */
-  .hero {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+/* 맵 이미지 영역 (블러 배경) */
+.map-thumb{
+  height:160px;
+  background:
+    linear-gradient(180deg, transparent 0%, var(--panel) 100%),
+    linear-gradient(135deg, #1e2a3a 0%, #0d1117 100%);
+  display:flex;
+  align-items:flex-end;
+  padding:16px;
+  flex-shrink:0;
+  position:relative;
+  overflow:hidden;
+}
 
-  .hero-sub {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--orange-dim);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
+/* 격자 패턴 (맵 프리뷰 대체) */
+.map-thumb::before{
+  content:'';
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);
+  background-size:20px 20px;
+}
 
-  .hero-title {
-    font-family: 'Oswald', sans-serif;
-    font-size: 52px;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #eef0f5;
-    text-shadow: 0 0 60px rgba(232,98,26,0.15);
-  }
+.map-thumb-name{
+  font-family:'Roboto Mono',monospace;
+  font-size:12px;
+  color:var(--dim);
+  position:relative;z-index:1;
+}
 
-  .hero-title em {
-    color: var(--orange);
-    font-style: normal;
-  }
+.map-thumb-val{
+  font-size:14px;
+  font-weight:500;
+  color:var(--white);
+  margin-top:2px;
+  position:relative;z-index:1;
+}
 
-  /* Map info strip */
-  .map-strip {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
+/* 오른쪽 섹션들 */
+.right-section{
+  padding:18px 20px;
+  border-bottom:1px solid var(--line);
+}
 
-  .map-tag {
-    background: rgba(232,98,26,0.1);
-    border: 1px solid rgba(232,98,26,0.3);
-    padding: 4px 12px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--orange);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-  }
+.right-label{
+  font-size:10px;
+  color:var(--dim);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:10px;
+}
 
-  .map-name {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
+/* 팁 */
+.tip-box{
+  padding:18px 20px;
+  flex:1;
+}
 
-  /* Rules panel */
-  .rules-panel {
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-left: 3px solid var(--orange);
-    padding: 16px 20px;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-  }
+.tip-text{
+  font-size:12px;
+  color:#777;
+  line-height:1.8;
+  animation:tipFade 0.4s ease;
+}
 
-  .panel-title {
-    font-family: 'Oswald', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--orange);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+@keyframes tipFade{from{opacity:0}to{opacity:1}}
 
-  .panel-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--panel-border);
-  }
+.tip-num{
+  font-size:10px;
+  color:var(--line);
+  margin-top:10px;
+  font-family:'Roboto Mono',monospace;
+}
 
-  .rules-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+/* 서버 스탯 */
+.stat-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px;
+}
 
-  .rules-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #9aa0b0;
-  }
+.stat-row:last-child{margin-bottom:0;}
 
-  .rules-list li::before {
-    content: '▸';
-    color: var(--orange);
-    font-size: 11px;
-    margin-top: 2px;
-    flex-shrink: 0;
-  }
+.stat-key{
+  font-size:11px;
+  color:var(--dim);
+}
 
-  /* ── RIGHT PANEL ── */
-  .right-panel {
-    border-left: 1px solid var(--panel-border);
-    background: rgba(6,8,11,0.7);
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    overflow: hidden;
-  }
+.stat-val{
+  font-family:'Roboto Mono',monospace;
+  font-size:12px;
+  color:var(--text);
+}
 
-  .right-section {
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--panel-border);
-  }
+/* ── 하단 진행 바 ── */
+.bottom{
+  background:var(--panel2);
+  border-top:1px solid var(--line);
+  padding:14px 20px 16px;
+}
 
-  /* Players list */
-  .players-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 200px;
-    overflow-y: auto;
-  }
+.progress-info{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
 
-  .players-list::-webkit-scrollbar { width: 3px; }
-  .players-list::-webkit-scrollbar-track { background: transparent; }
-  .players-list::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 2px; }
+.progress-status{
+  font-size:12px;
+  color:var(--dim);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
 
-  .player-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    padding: 4px 0;
-    opacity: 0;
-    animation: fadeSlide 0.4s ease forwards;
-  }
+.loading-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:ldot 1.2s ease-in-out infinite;
+}
 
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateX(-6px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
+@keyframes ldot{0%,100%{opacity:1}50%{opacity:0.2}}
 
-  .player-avatar {
-    width: 22px;
-    height: 22px;
-    background: rgba(232,98,26,0.15);
-    border: 1px solid rgba(232,98,26,0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-family: 'Oswald', sans-serif;
-    color: var(--orange);
-    flex-shrink: 0;
-    clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%);
-  }
+.progress-pct{
+  font-family:'Roboto Mono',monospace;
+  font-size:12px;
+  color:var(--accent);
+  font-weight:500;
+}
 
-  .player-name { color: #bcc2d0; flex: 1; }
-  .player-ping {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-  }
+.bar-bg{
+  width:100%;
+  height:4px;
+  background:var(--line);
+  border-radius:2px;
+  overflow:hidden;
+}
 
-  .player-ping.good { color: #4caf78; }
-  .player-ping.ok   { color: #d4a017; }
+.bar-fg{
+  height:100%;
+  background:var(--accent);
+  border-radius:2px;
+  transition:width 0.3s ease;
+}
 
-  /* Tip box */
-  .tip-box {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 18px 20px;
-  }
-
-  .tip-content {
-    flex: 1;
-    font-size: 13px;
-    line-height: 1.7;
-    color: #7a8090;
-    font-family: 'Share Tech Mono', monospace;
-    animation: tipFade 0.6s ease;
-  }
-
-  @keyframes tipFade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
-  .tip-counter {
-    margin-top: 10px;
-    font-size: 10px;
-    color: var(--text-dim);
-    font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 1px;
-  }
-
-  /* ── BOTTOM BAR ── */
-  .bottombar {
-    border-top: 1px solid var(--panel-border);
-    background: rgba(6,8,10,0.9);
-    flex-shrink: 0;
-    padding: 0 28px;
-  }
-
-  /* Progress section */
-  .progress-section {
-    padding: 12px 0 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .progress-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .progress-status {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--orange);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .blink-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--orange);
-    animation: blink 1.2s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.2; }
-  }
-
-  .progress-pct {
-    font-family: 'Oswald', sans-serif;
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--orange);
-    letter-spacing: 1px;
-  }
-
-  /* Bar track */
-  .bar-track {
-    width: 100%;
-    height: 6px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.06);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #0a6080, var(--orange), #60e0ff);
-    transition: width 0.4s ease;
-    position: relative;
-  }
-
-  .bar-fill::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: 30px;
-    background: linear-gradient(90deg, transparent, rgba(255,160,80,0.6));
-    animation: shimmer 1.5s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0%   { opacity: 0.3; }
-    50%  { opacity: 1; }
-    100% { opacity: 0.3; }
-  }
-
-  /* Segment markers */
-  .bar-segments {
-    position: absolute;
-    inset: 0;
-    display: flex;
-  }
-
-  .bar-seg {
-    flex: 1;
-    border-right: 1px solid rgba(0,0,0,0.4);
-  }
-
-  .bar-seg:last-child { border-right: none; }
-
-  /* Sub-status */
-  .sub-status {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 1px;
-    text-align: right;
-  }
+.progress-file{
+  margin-top:6px;
+  font-size:10px;
+  color:var(--line);
+  font-family:'Roboto Mono',monospace;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-align:right;
+}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="bg-anim"></div>
-
-<div class="content">
-
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="logo-mark">GM</div>
-      <div class="server-name"><span>SAND</span>BOX &nbsp;·&nbsp; 빅시티 자유공원</div>
-    </div>
-    <div class="topbar-right">
-      <div class="stat-item">
-        <span class="stat-label">플레이어</span>
-        <span class="stat-value" id="player-count">0</span>
-        <span class="stat-label">/ 64</span>
-      </div>
-      <div class="divider-v"></div>
-      <div class="stat-item">
-        <span class="stat-label">핑</span>
-        <span class="stat-value" id="ping-val">—</span>
-        <span class="stat-label">ms</span>
-      </div>
-      <div class="divider-v"></div>
-      <div class="stat-item">
-        <span class="stat-label">맵</span>
-        <span class="stat-value" id="map-display">gm_bigcity_improved</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIN -->
+  <!-- 메인 -->
   <div class="main">
 
-    <!-- LEFT -->
-    <div class="left-panel">
+    <!-- 왼쪽 -->
+    <div class="left">
+      <div class="server-name" id="server-name">한국 샌드박스 서버</div>
+      <div class="server-gamemode">Sandbox</div>
 
-      <div class="hero">
-        <div class="hero-sub">// 서버에 접속 중</div>
-        <div class="hero-title">SAND<em>BOX</em></div>
+      <div class="sep"></div>
+
+      <div class="info-row">
+        <span class="info-label">맵</span>
+        <span class="info-value" id="map-val">gm_bigcity_improved</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">지역</span>
+        <span class="info-value">Korea</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">최대 인원</span>
+        <span class="info-value accent">64명</span>
       </div>
 
-      <div class="map-strip">
-        <div class="map-tag">맵</div>
-        <div class="map-name" id="map-full">gm_bigcity_improved</div>
-        <div class="map-tag" style="margin-left:8px;">모드</div>
-        <div class="map-name">Sandbox</div>
+      <div class="rules-title">서버 규칙</div>
+      <div class="rules-list">
+        <div class="rule-item">프롭 스팸 및 서버 렉 유발 행위 금지</div>
+        <div class="rule-item">다른 플레이어의 빌드 파괴 및 방해 금지</div>
+        <div class="rule-item">맵 밖으로 나가는 거대 프롭 빌드 금지</div>
+        <div class="rule-item">어드민의 지시에 반드시 따를 것</div>
+        <div class="rule-item">욕설 및 차별적 발언 금지</div>
+        <div class="rule-item">프롭 킬, 프롭 펀치, 프롭 블로킹 금지</div>
+        <div class="rule-item">분쟁 발생 시 @ 입력으로 관리자 호출</div>
       </div>
-
-      <div class="rules-panel">
-        <div class="panel-title">서버 규칙</div>
-        <ul class="rules-list">
-          <li>프롭 스팸 및 서버에 렉을 유발하는 행위를 금지합니다.</li>
-          <li>다른 플레이어의 빌드를 허락 없이 파괴하거나 방해하지 마세요.</li>
-          <li>욕설은 허용하나 비하 발언은 금지합니다. (특히 일베/메갈 등 혐오 표현 및 패드립 즉시 차단)</li>
-          <li>어드민의 지시에 반드시 따라야 합니다.</li>
-          <li>채팅 및 음성에서 욕설, 차별적 발언을 금지합니다.</li>
-          <li>다른 플레이어를 의도적으로 공격하거나 방해하지 마세요.</li>
-          <li>신고 시스템(Report)을 장난이나 허위 사실로 악용할 경우 제재 대상이 됩니다.</li>
-        </ul>
-      </div>
-
     </div>
 
-    <!-- RIGHT -->
-    <div class="right-panel">
+    <!-- 오른쪽 -->
+    <div class="right">
+
+      <div class="map-thumb">
+        <div>
+          <div class="map-thumb-name">현재 맵</div>
+          <div class="map-thumb-val" id="map-thumb">gm_bigcity_improved</div>
+        </div>
+      </div>
 
       <div class="right-section">
-        <div class="panel-title">접속 중인 플레이어</div>
-        <div class="players-list" id="player-list"></div>
+        <div class="right-label">서버 정보</div>
+        <div class="stat-row">
+          <span class="stat-key">게임모드</span>
+          <span class="stat-val">Sandbox</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-key">최대 인원</span>
+          <span class="stat-val">64</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-key">상태</span>
+          <span class="stat-val" style="color:#4ade80">온라인</span>
+        </div>
       </div>
 
       <div class="tip-box">
-        <div class="panel-title">팁</div>
-        <div class="tip-content" id="tip-text"></div>
-        <div class="tip-counter" id="tip-counter">TIP 1 / 6</div>
+        <div class="right-label">팁</div>
+        <div class="tip-text" id="tip-text"></div>
+        <div class="tip-num" id="tip-num">1 / 6</div>
       </div>
 
     </div>
-
   </div>
 
-  <!-- BOTTOM BAR -->
-  <div class="bottombar">
-    <div class="progress-section">
-      <div class="progress-header">
-        <div class="progress-status">
-          <div class="blink-dot"></div>
-          <span id="status-text">게임 에셋 로딩 중</span>
-        </div>
-        <div class="progress-pct"><span id="pct-text">0</span>%</div>
+  <!-- 하단 -->
+  <div class="bottom">
+    <div class="progress-info">
+      <div class="progress-status">
+        <div class="loading-dot"></div>
+        <span id="status-text">서버에 연결 중...</span>
       </div>
-      <div class="bar-track">
-        <div class="bar-fill" id="bar-fill" style="width:0%;">
-          <div class="bar-segments">
-            <div class="bar-seg"></div><div class="bar-seg"></div>
-            <div class="bar-seg"></div><div class="bar-seg"></div>
-            <div class="bar-seg"></div><div class="bar-seg"></div>
-            <div class="bar-seg"></div><div class="bar-seg"></div>
-            <div class="bar-seg"></div><div class="bar-seg"></div>
-          </div>
-        </div>
-      </div>
-      <div class="sub-status" id="sub-status">Initializing...</div>
+      <div class="progress-pct"><span id="pct">0</span>%</div>
     </div>
+    <div class="bar-bg">
+      <div class="bar-fg" id="bar" style="width:0%"></div>
+    </div>
+    <div class="progress-file" id="sub-text">Initializing...</div>
   </div>
 
 </div>
-
 <script>
-/* ── Garry's Mod API 연동 ── */
-function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-  document.querySelector('.server-name').innerHTML = servername
-    ? servername.replace(/([^a-zA-Z가-힣 ]*)(.+)/, '$1<span>$2</span>')
-    : '<span>SAND</span>BOX &nbsp;·&nbsp; 빅시티 자유공원';
-  if (mapname) {
-    document.getElementById('map-display').textContent = mapname;
-    document.getElementById('map-full').textContent = mapname;
-  }
+/* ══ 설정 ════════════════════════════════ */
+const MAP_NAME     = 'gm_bigcity_improved'; // ← 맵 이름
+const SERVER_NAME  = '한국 샌드박스 서버';    // ← 서버 이름
+
+function setMap(n){
+  const v=n||MAP_NAME;
+  document.getElementById('map-val').textContent=v;
+  document.getElementById('map-thumb').textContent=v;
+}
+document.getElementById('server-name').textContent=SERVER_NAME;
+setMap(MAP_NAME);
+
+/* GMod API */
+function GameDetails(sn,su,mn,mp){
+  if(sn) document.getElementById('server-name').textContent=sn;
+  if(mn) setMap(mn);
+}
+function SetFilesTotal(){}
+function SetFilesNeeded(){}
+function DownloadingFile(f){document.getElementById('sub-text').textContent=f||'';}
+function LoadingInfo(s,n,id,tx,tt){
+  const st={1:'맵 초기화 중',2:'리소스 다운로드 중',3:'파일 다운로드 중',4:'게임 초기화 중',5:'서버 동기화 중',6:'접속 완료'};
+  document.getElementById('status-text').textContent=st[s]||n||'로딩 중';
+  if(tt>0) setP(Math.min(100,Math.round((tx/tt)*100)));
+  if(n) document.getElementById('sub-text').textContent=n;
+}
+function SetStatusChanged(s){if(s)document.getElementById('status-text').textContent=s;}
+function setP(p){
+  document.getElementById('bar').style.width=p+'%';
+  document.getElementById('pct').textContent=p;
 }
 
-function SetFilesTotal(total) { /* 파일 총 수 */ }
-
-function SetFilesNeeded(needed) { /* 필요 파일 */ }
-
-function DownloadingFile(file) {
-  document.getElementById('sub-status').textContent = file || '';
-}
-
-function LoadingInfo(status, name, id, transmitted, total) {
-  const stages = {
-    1:'맵 초기화 중', 2:'리소스 다운로드 중',
-    3:'리소스 다운로드 중', 4:'게임 초기화 중',
-    5:'서버 데이터 수신 중', 6:'완료'
-  };
-  document.getElementById('status-text').textContent = stages[status] || name || '로딩 중';
-  const pct = total > 0 ? Math.min(100, Math.round((transmitted / total) * 100)) : 0;
-  updateProgress(pct);
-  document.getElementById('sub-status').textContent = name || '';
-}
-
-function updateProgress(pct) {
-  document.getElementById('bar-fill').style.width = pct + '%';
-  document.getElementById('pct-text').textContent = pct;
-}
-
-function SetStatusChanged(status) {
-  document.getElementById('status-text').textContent = status || '';
-}
-
-/* ── Player count ── */
-function UpdateServerInfo(hostname, mapname, ip, gamemode, version) {}
-
-/* ── 팁 로테이션 ── */
-const tips = [
-  "f4 키를 눌러 GPHINE을 사용해 보세요",
-  "서버는 호스팅을 통해 가동 중 입니다",
-  "서버 내에 있는 애드온을 사용해 다양한 컨텐츠를 즐겨보세요",
+/* 팁 */
+const tips=[
+  "Q 키를 눌러 스폰 메뉴를 열고 프롭, 엔티티, NPC를 소환할 수 있습니다.",
+  "C 키로 컨텍스트 메뉴를 열어 선택한 오브젝트의 속성을 수정하세요.",
+  "툴건으로 웰드, 로프, 스러스터 등 다양한 컨스트레인트를 사용해보세요.",
+  "E 키로 오브젝트를 집고, Shift+E로 정밀하게 배치할 수 있습니다.",
+  "피직스건으로 오브젝트를 집어 던지거나 당길 수 있습니다.",
+  "Z 키(Undo)로 방금 스폰하거나 변경한 오브젝트를 되돌릴 수 있습니다.",
 ];
-
-let tipIdx = 0;
-function showTip() {
-  const el = document.getElementById('tip-text');
-  el.style.animation = 'none';
-  el.offsetHeight;
-  el.style.animation = 'tipFade 0.6s ease';
-  el.textContent = tips[tipIdx];
-  document.getElementById('tip-counter').textContent = `TIP ${tipIdx+1} / ${tips.length}`;
-  tipIdx = (tipIdx + 1) % tips.length;
+let ti=0;
+function showTip(){
+  const el=document.getElementById('tip-text');
+  el.style.animation='none';el.offsetHeight;
+  el.style.animation='tipFade 0.4s ease';
+  el.textContent=tips[ti];
+  document.getElementById('tip-num').textContent=(ti+1)+' / '+tips.length;
+  ti=(ti+1)%tips.length;
 }
-showTip();
-setInterval(showTip, 7000);
+showTip();setInterval(showTip,7000);
 
-/* ── 실시간 플레이어 목록 ── */
-const API_URL = 'https://polished-block-ef94.si5671393.workers.dev/'; // 여기 바꾸기
-
-function pingQuality(ms) {
-  if (ms < 60)  return 'good';
-  if (ms < 120) return 'ok';
-  return '';
-}
-
-function renderPlayers(players) {
-  const list = document.getElementById('player-list');
-  list.innerHTML = '';
-  players.forEach((p, i) => {
-    const row = document.createElement('div');
-    row.className = 'player-row';
-    row.style.animationDelay = (i * 60) + 'ms';
-    const init = (p.name || '??').slice(0, 2).toUpperCase();
-    const q = pingQuality(p.ping);
-    row.innerHTML = `<div class="player-avatar">${init}</div>
-      <div class="player-name">${p.name}</div>
-      <div class="player-ping ${q}">${p.ping}ms</div>`;
-    list.appendChild(row);
-  });
-  document.getElementById('player-count').textContent = players.length;
-}
-
-async function fetchPlayers() {
-  try {
-    const res  = await fetch(API_URL + '?t=' + Date.now());
-    const data = await res.json();
-    renderPlayers(data.players || []);
-  } catch (e) {
-    // API 없으면 조용히 무시
-  }
-}
-
-fetchPlayers();
-setInterval(fetchPlayers, 10000); // 10초마다 갱신
-
-/* ── 데모용 진행 바 (실제 서버에선 LoadingInfo 가 처리) ── */
-let demoPct = 0;
-const statusMessages = [
-  '클라이언트 초기화 중','맵 다운로드 중','리소스 다운로드 중',
-  '서버 파일 동기화 중','게임 모드 로딩 중','완료 — 접속 준비됨'
-];
-const subMessages = [
-  'Initializing client...','maps/rp_downtown_v4c.bsp',
-  'materials/gmod/loading.vtf','lua/autorun/darkrp_config.lua',
-  'loading gamemode: darkrp','Ready!'
-];
-let stageIdx = 0;
-const demoTimer = setInterval(() => {
-  demoPct = Math.min(100, demoPct + Math.random() * 4 + 1);
-  updateProgress(Math.round(demoPct));
-  const s = Math.floor((demoPct / 100) * (statusMessages.length - 1));
-  if (s !== stageIdx) {
-    stageIdx = s;
-    document.getElementById('status-text').textContent = statusMessages[s];
-    document.getElementById('sub-status').textContent = subMessages[s];
-  }
-  if (demoPct >= 100) {
-    clearInterval(demoTimer);
-    document.querySelector('.blink-dot').style.background = '#4caf78';
-  }
-}, 120);
+/* 데모 */
+const ss=['서버에 연결 중...','맵 다운로드 중','리소스 다운로드 중','서버 파일 동기화 중','게임모드 로딩 중','접속 완료'];
+const sb=['Initializing...','maps/gm_bigcity_improved.bsp','materials/loading.vtf','lua/autorun/init.lua','loading gamemode: sandbox','Ready!'];
+let p=0,si=0;
+const demo=setInterval(()=>{
+  p=Math.min(100,p+Math.random()*3+1);
+  setP(Math.round(p));
+  const s=Math.min(Math.floor((p/100)*(ss.length-1)),ss.length-1);
+  if(s!==si){si=s;document.getElementById('status-text').textContent=ss[s];document.getElementById('sub-text').textContent=sb[s];}
+  if(p>=100){clearInterval(demo);document.querySelector('.loading-dot').style.background='#4ade80';}
+},120);
 </script>
 </body>
 </html>
