@@ -2,456 +2,124 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Loading</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>빅시티자유공원</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-
-:root{
-  --bg:    #1a1a1a;
-  --panel: #242424;
-  --panel2:#2c2c2c;
-  --line:  #333333;
-  --accent:#f97316;
-  --text:  #cccccc;
-  --dim:   #666666;
-  --white: #eeeeee;
-
-  /* ★ 맵 이름 여기서 바꾸기 ★ */
-}
-
-html,body{
-  width:100%;height:100%;
-  overflow:hidden;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Roboto',sans-serif;
-}
-
-.wrap{
-  width:100%;height:100%;
-  display:grid;
-  grid-template-rows:1fr auto;
-}
-
-/* ── 메인 영역 ── */
-.main{
-  display:grid;
-  grid-template-columns:1fr 300px;
-  min-height:0;
-}
-
-/* ── 왼쪽 ── */
-.left{
-  padding:40px 44px;
-  display:flex;
-  flex-direction:column;
-  gap:0;
-  border-right:1px solid var(--line);
-}
-
-/* 서버 이름 */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+html,body{width:100%;height:100%;overflow:hidden;background:#f4f8fc;}
+body{position:relative;}
+.bg{
+position:fixed;width:100%;height:100%;
+background:linear-gradient(rgba(255,255,255,0.72),rgba(255,255,255,0.82)),
+url("https://www.dropbox.com/scl/fi/w97um3irj3ar15wfo71qp/20260517230706_1.jpg?rlkey=2fo618ctwkvrbxg40i2p6r4yj&st=jiqdoiiq&dl=1");
+background-size:cover;background-position:center;filter:blur(1px);transform:scale(1.02);}
+.topbar{
+position:absolute;top:0;left:0;width:100%;height:70px;
+background:rgba(255,255,255,.88);border-bottom:1px solid #dce6f0;
+display:flex;align-items:center;padding:0 28px;backdrop-filter:blur(8px);}
+.gmodlogo{display:flex;align-items:center;gap:12px;}
+.gbox{
+width:42px;height:42px;background:#4ea3ff;border-radius:10px;
+display:flex;justify-content:center;align-items:center;
+color:white;font-size:28px;font-weight:bold;}
+.logo-text{font-size:15px;color:#4d90d9;font-weight:600;}
+.container{
+position:absolute;width:100%;height:100%;
+display:flex;align-items:center;padding-left:50px;}
+.panel{
+width:470px;background:rgba(255,255,255,.48);
+border:1px solid rgba(255,255,255,.7);
+backdrop-filter:blur(12px);border-radius:24px;
+padding:35px;box-shadow:0 20px 60px rgba(0,0,0,.08);}
+.server-type{color:#8291a6;font-size:18px;margin-bottom:8px;}
 .server-name{
-  font-size:28px;
-  font-weight:700;
-  color:var(--white);
-  letter-spacing:0.5px;
-  margin-bottom:6px;
-  line-height:1.2;
-}
-
-.server-gamemode{
-  font-size:13px;
-  color:var(--accent);
-  font-weight:500;
-  letter-spacing:0.5px;
-  margin-bottom:32px;
-  text-transform:uppercase;
-}
-
-/* 구분선 */
-.sep{
-  width:100%;
-  height:1px;
-  background:var(--line);
-  margin-bottom:28px;
-}
-
-/* 맵 정보 */
-.info-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.info-label{
-  font-size:11px;
-  color:var(--dim);
-  text-transform:uppercase;
-  letter-spacing:1.5px;
-  width:80px;
-  flex-shrink:0;
-}
-
-.info-value{
-  font-family:'Roboto Mono',monospace;
-  font-size:13px;
-  color:var(--text);
-}
-
-.info-value.accent{color:var(--accent);}
-
-/* 규칙 */
-.rules-title{
-  font-size:11px;
-  color:var(--dim);
-  text-transform:uppercase;
-  letter-spacing:1.5px;
-  margin-top:28px;
-  margin-bottom:14px;
-}
-
-.rules-list{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.rule-item{
-  display:flex;
-  gap:10px;
-  font-size:13px;
-  color:#888;
-  line-height:1.5;
-}
-
-.rule-item::before{
-  content:'•';
-  color:var(--accent);
-  flex-shrink:0;
-}
-
-/* ── 오른쪽 ── */
-.right{
-  background:var(--panel);
-  display:flex;
-  flex-direction:column;
-}
-
-/* 맵 이미지 영역 (블러 배경) */
-.map-thumb{
-  height:160px;
-  background:
-    linear-gradient(180deg, transparent 0%, var(--panel) 100%),
-    linear-gradient(135deg, #1e2a3a 0%, #0d1117 100%);
-  display:flex;
-  align-items:flex-end;
-  padding:16px;
-  flex-shrink:0;
-  position:relative;
-  overflow:hidden;
-}
-
-/* 격자 패턴 (맵 프리뷰 대체) */
-.map-thumb::before{
-  content:'';
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);
-  background-size:20px 20px;
-}
-
-.map-thumb-name{
-  font-family:'Roboto Mono',monospace;
-  font-size:12px;
-  color:var(--dim);
-  position:relative;z-index:1;
-}
-
-.map-thumb-val{
-  font-size:14px;
-  font-weight:500;
-  color:var(--white);
-  margin-top:2px;
-  position:relative;z-index:1;
-}
-
-/* 오른쪽 섹션들 */
-.right-section{
-  padding:18px 20px;
-  border-bottom:1px solid var(--line);
-}
-
-.right-label{
-  font-size:10px;
-  color:var(--dim);
-  text-transform:uppercase;
-  letter-spacing:1.5px;
-  margin-bottom:10px;
-}
-
-/* 팁 */
-.tip-box{
-  padding:18px 20px;
-  flex:1;
-}
-
-.tip-text{
-  font-size:12px;
-  color:#777;
-  line-height:1.8;
-  animation:tipFade 0.4s ease;
-}
-
-@keyframes tipFade{from{opacity:0}to{opacity:1}}
-
-.tip-num{
-  font-size:10px;
-  color:var(--line);
-  margin-top:10px;
-  font-family:'Roboto Mono',monospace;
-}
-
-/* 서버 스탯 */
-.stat-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:6px;
-}
-
-.stat-row:last-child{margin-bottom:0;}
-
-.stat-key{
-  font-size:11px;
-  color:var(--dim);
-}
-
-.stat-val{
-  font-family:'Roboto Mono',monospace;
-  font-size:12px;
-  color:var(--text);
-}
-
-/* ── 하단 진행 바 ── */
-.bottom{
-  background:var(--panel2);
-  border-top:1px solid var(--line);
-  padding:14px 20px 16px;
-}
-
-.progress-info{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:8px;
-}
-
-.progress-status{
-  font-size:12px;
-  color:var(--dim);
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.loading-dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--accent);
-  animation:ldot 1.2s ease-in-out infinite;
-}
-
-@keyframes ldot{0%,100%{opacity:1}50%{opacity:0.2}}
-
-.progress-pct{
-  font-family:'Roboto Mono',monospace;
-  font-size:12px;
-  color:var(--accent);
-  font-weight:500;
-}
-
-.bar-bg{
-  width:100%;
-  height:4px;
-  background:var(--line);
-  border-radius:2px;
-  overflow:hidden;
-}
-
-.bar-fg{
-  height:100%;
-  background:var(--accent);
-  border-radius:2px;
-  transition:width 0.3s ease;
-}
-
-.progress-file{
-  margin-top:6px;
-  font-size:10px;
-  color:var(--line);
-  font-family:'Roboto Mono',monospace;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  text-align:right;
-}
+font-size:44px;font-weight:800;color:#49a0ff;
+line-height:1.1;margin-bottom:20px;}
+.line{
+width:60px;height:4px;background:#49a0ff;
+border-radius:999px;margin-bottom:25px;}
+.status{font-size:24px;color:#3f9dff;font-weight:700;}
+.substatus{
+color:#77879d;font-size:16px;
+margin-top:8px;margin-bottom:22px;}
+.progress-bg{
+width:100%;height:10px;background:#dfe8f2;
+border-radius:999px;overflow:hidden;}
+.progress{
+width:0%;height:100%;
+background:linear-gradient(90deg,#65b6ff,#2b90ff);
+border-radius:999px;transition:.25s;}
+.percent{
+margin-top:10px;color:#4ea3ff;
+font-weight:700;font-size:16px;}
+.info{
+margin-top:25px;border-top:1px solid #dce6f0;
+padding-top:20px;color:#708199;
+line-height:1.8;font-size:15px;}
+.footer{
+position:absolute;bottom:0;width:100%;height:55px;
+background:rgba(255,255,255,.8);
+border-top:1px solid #dce6f0;
+display:flex;align-items:center;
+padding:0 24px;color:#5c88b8;font-size:14px;}
 </style>
 </head>
 <body>
-<div class="wrap">
-
-  <!-- 메인 -->
-  <div class="main">
-
-    <!-- 왼쪽 -->
-    <div class="left">
-      <div class="server-name" id="server-name">한국 샌드박스 서버</div>
-      <div class="server-gamemode">Sandbox</div>
-
-      <div class="sep"></div>
-
-      <div class="info-row">
-        <span class="info-label">맵</span>
-        <span class="info-value" id="map-val">gm_bigcity_improved</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">지역</span>
-        <span class="info-value">Korea</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">최대 인원</span>
-        <span class="info-value accent">64명</span>
-      </div>
-
-      <div class="rules-title">서버 규칙</div>
-      <div class="rules-list">
-        <div class="rule-item">프롭 스팸 및 서버 렉 유발 행위 금지</div>
-        <div class="rule-item">다른 플레이어의 빌드 파괴 및 방해 금지</div>
-        <div class="rule-item">맵 밖으로 나가는 거대 프롭 빌드 금지</div>
-        <div class="rule-item">어드민의 지시에 반드시 따를 것</div>
-        <div class="rule-item">욕설 및 차별적 발언 금지</div>
-        <div class="rule-item">프롭 킬, 프롭 펀치, 프롭 블로킹 금지</div>
-        <div class="rule-item">분쟁 발생 시 @ 입력으로 관리자 호출</div>
-      </div>
-    </div>
-
-    <!-- 오른쪽 -->
-    <div class="right">
-
-      <div class="map-thumb">
-        <div>
-          <div class="map-thumb-name">현재 맵</div>
-          <div class="map-thumb-val" id="map-thumb">gm_bigcity_improved</div>
-        </div>
-      </div>
-
-      <div class="right-section">
-        <div class="right-label">서버 정보</div>
-        <div class="stat-row">
-          <span class="stat-key">게임모드</span>
-          <span class="stat-val">Sandbox</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-key">최대 인원</span>
-          <span class="stat-val">64</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-key">상태</span>
-          <span class="stat-val" style="color:#4ade80">온라인</span>
-        </div>
-      </div>
-
-      <div class="tip-box">
-        <div class="right-label">팁</div>
-        <div class="tip-text" id="tip-text"></div>
-        <div class="tip-num" id="tip-num">1 / 6</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- 하단 -->
-  <div class="bottom">
-    <div class="progress-info">
-      <div class="progress-status">
-        <div class="loading-dot"></div>
-        <span id="status-text">서버에 연결 중...</span>
-      </div>
-      <div class="progress-pct"><span id="pct">0</span>%</div>
-    </div>
-    <div class="bar-bg">
-      <div class="bar-fg" id="bar" style="width:0%"></div>
-    </div>
-    <div class="progress-file" id="sub-text">Initializing...</div>
-  </div>
-
+<div class="bg"></div>
+<div class="topbar">
+<div class="gmodlogo">
+<div class="gbox">g</div>
+<div class="logo-text">garry's mod</div>
 </div>
+</div>
+
+<div class="container">
+<div class="panel">
+<div class="server-type">Sandbox Server</div>
+<div class="server-name">빅시티자유공원</div>
+<div class="line"></div>
+
+<div class="status" id="status">서버 접속 중...</div>
+<div class="substatus" id="substatus">서버 콘텐츠 다운로드 중</div>
+
+<div class="progress-bg">
+<div class="progress" id="bar"></div>
+</div>
+
+<div class="percent" id="percent">0%</div>
+
+<div class="info">
+SteamID: <span id="steamid">불러오는 중...</span><br>
+맵: <span id="map">gm_bigcity</span><br>
+모드: Sandbox
+</div>
+</div>
+</div>
+
+<div class="footer">💡 자유롭게 건축하고 놀 수 있는 샌드박스 서버입니다</div>
+
 <script>
-/* ══ 설정 ════════════════════════════════ */
-const MAP_NAME     = 'gm_bigcity_improved'; // ← 맵 이름
-const SERVER_NAME  = '한국 샌드박스 서버';    // ← 서버 이름
+let currentProgress = 0;
 
-function setMap(n){
-  const v=n||MAP_NAME;
-  document.getElementById('map-val').textContent=v;
-  document.getElementById('map-thumb').textContent=v;
-}
-document.getElementById('server-name').textContent=SERVER_NAME;
-setMap(MAP_NAME);
-
-/* GMod API */
-function GameDetails(sn,su,mn,mp){
-  if(sn) document.getElementById('server-name').textContent=sn;
-  if(mn) setMap(mn);
-}
-function SetFilesTotal(){}
-function SetFilesNeeded(){}
-function DownloadingFile(f){document.getElementById('sub-text').textContent=f||'';}
-function LoadingInfo(s,n,id,tx,tt){
-  const st={1:'맵 초기화 중',2:'리소스 다운로드 중',3:'파일 다운로드 중',4:'게임 초기화 중',5:'서버 동기화 중',6:'접속 완료'};
-  document.getElementById('status-text').textContent=st[s]||n||'로딩 중';
-  if(tt>0) setP(Math.min(100,Math.round((tx/tt)*100)));
-  if(n) document.getElementById('sub-text').textContent=n;
-}
-function SetStatusChanged(s){if(s)document.getElementById('status-text').textContent=s;}
-function setP(p){
-  document.getElementById('bar').style.width=p+'%';
-  document.getElementById('pct').textContent=p;
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode){
+document.getElementById("steamid").innerText = steamid;
+document.getElementById("map").innerText = mapname;
 }
 
-/* 팁 */
-const tips=[
-  "Q 키를 눌러 스폰 메뉴를 열고 프롭, 엔티티, NPC를 소환할 수 있습니다.",
-  "C 키로 컨텍스트 메뉴를 열어 선택한 오브젝트의 속성을 수정하세요.",
-  "툴건으로 웰드, 로프, 스러스터 등 다양한 컨스트레인트를 사용해보세요.",
-  "E 키로 오브젝트를 집고, Shift+E로 정밀하게 배치할 수 있습니다.",
-  "피직스건으로 오브젝트를 집어 던지거나 당길 수 있습니다.",
-  "Z 키(Undo)로 방금 스폰하거나 변경한 오브젝트를 되돌릴 수 있습니다.",
-];
-let ti=0;
-function showTip(){
-  const el=document.getElementById('tip-text');
-  el.style.animation='none';el.offsetHeight;
-  el.style.animation='tipFade 0.4s ease';
-  el.textContent=tips[ti];
-  document.getElementById('tip-num').textContent=(ti+1)+' / '+tips.length;
-  ti=(ti+1)%tips.length;
+function DownloadingFile(file){
+document.getElementById("status").innerText = "콘텐츠 다운로드 중";
+document.getElementById("substatus").innerText = file;
 }
-showTip();setInterval(showTip,7000);
 
-/* 데모 */
-const ss=['서버에 연결 중...','맵 다운로드 중','리소스 다운로드 중','서버 파일 동기화 중','게임모드 로딩 중','접속 완료'];
-const sb=['Initializing...','maps/gm_bigcity_improved.bsp','materials/loading.vtf','lua/autorun/init.lua','loading gamemode: sandbox','Ready!'];
-let p=0,si=0;
-const demo=setInterval(()=>{
-  p=Math.min(100,p+Math.random()*3+1);
-  setP(Math.round(p));
-  const s=Math.min(Math.floor((p/100)*(ss.length-1)),ss.length-1);
-  if(s!==si){si=s;document.getElementById('status-text').textContent=ss[s];document.getElementById('sub-text').textContent=sb[s];}
-  if(p>=100){clearInterval(demo);document.querySelector('.loading-dot').style.background='#4ade80';}
-},120);
+function SetStatusChanged(status){
+document.getElementById("status").innerText = status;
+}
+
+setInterval(() => {
+if(currentProgress < 95){ currentProgress += Math.random() * 6; }
+currentProgress = Math.min(currentProgress,95);
+document.getElementById("bar").style.width = currentProgress + "%";
+document.getElementById("percent").innerText = Math.floor(currentProgress) + "%";
+},500);
 </script>
 </body>
 </html>
